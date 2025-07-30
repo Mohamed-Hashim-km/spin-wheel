@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { Gift, RotateCcw, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 interface Prize {
   id: number;
@@ -12,13 +13,16 @@ interface Prize {
 
 const prizes: Prize[] = [
   { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🎯" },
-  { id: 5, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
   { id: 2, text: "25% OFF", color: "#FFD23F", textColor: "#2D1810", icon: "⚡" },
-  { id: 5, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
+  { id: 10, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
   { id: 3, text: "5% OFF", color: "#118AB2", textColor: "#FFFFFF", icon: "💫" },
   { id: 4, text: "15% OFF", color: "#E74C3C", textColor: "#FFFFFF", icon: "🔥" },
-  { id: 5, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
-  { id: 6, text: "30% OFF", color: "#2ECC71", textColor: "#FFFFFF", icon: "🎉" },
+  { id: 5, text: "5% OFF", color: "#118AB2", textColor: "#FFFFFF", icon: "💫" },
+  { id: 6, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
+  { id: 7, text: "30% OFF", color: "#2ECC71", textColor: "#FFFFFF", icon: "🎉" },
+  { id: 8, text: "5% OFF", color: "#118AB2", textColor: "#FFFFFF", icon: "💫" },
+  { id: 9, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
+  
 ];
 
 const SpinWheel: React.FC = () => {
@@ -79,7 +83,7 @@ const SpinWheel: React.FC = () => {
       const textY = 150 + textRadius * Math.sin((midAngle * Math.PI) / 180);
 
       return (
-        <g key={prize.id}>
+        <g key={`${prize.id}-${index}`}>
           <path
             d={pathData}
             fill={prize.color}
@@ -91,27 +95,26 @@ const SpinWheel: React.FC = () => {
             x={textX}
             y={textY}
             fill={prize.textColor}
-            fontSize="11"
+            fontSize="9"
             fontWeight="bold"
             textAnchor="middle"
             dominantBaseline="middle"
             transform={`rotate(${midAngle + 90}, ${textX}, ${textY})`}
             className="pointer-events-none font-sans"
           >
-            <tspan x={textX} dy="-10">{prize.icon}</tspan>
-            {prize.text.length > 12 ? (
+            <tspan x={textX} dy="-10"><tspan className="text-[10px]">{prize.icon}</tspan></tspan>
+            {prize.text === "Better Luck Next Time" ? (
               <>
-                <tspan x={textX} dy="14">
-                  {prize.text.slice(0, 12)}
-                </tspan>
-                <tspan x={textX} dy="14">
-                  {prize.text.slice(12)}
-                </tspan>
+                <tspan x={textX} dy="14">Better Luck</tspan>
+                <tspan x={textX} dy="14">Next Time</tspan>
+              </>
+            ) : prize.text.length > 12 ? (
+              <>
+                <tspan x={textX} dy="14">{prize.text.slice(0, 12)}</tspan>
+                <tspan x={textX} dy="14">{prize.text.slice(12)}</tspan>
               </>
             ) : (
-              <tspan x={textX} dy="14">
-                {prize.text}
-              </tspan>
+              <tspan x={textX} dy="14">{prize.text}</tspan>
             )}
           </text>
         </g>
@@ -141,9 +144,11 @@ const SpinWheel: React.FC = () => {
       )}
 
       <div className="text-center mb-8">
+   
         <h1 className="text-4xl md:text-5xl font-bold text-amber-900 mb-2 tracking-tight">
           Maya Traders
         </h1>
+      
         <p className="text-amber-700 text-lg md:text-xl font-medium">
           Spin to win amazing discounts on premium crackers!
         </p>
@@ -157,7 +162,7 @@ const SpinWheel: React.FC = () => {
 
           <div
             ref={wheelRef}
-            className={`relative w-80 h-80 rounded-full shadow-2xl transition-transform duration-[3000ms] ease-out ${
+            className={`relative w-[500px] h-[500px] rounded-full shadow-2xl transition-transform duration-[3000ms] ease-out ${
               isSpinning ? "animate-pulse" : ""
             }`}
             style={{
@@ -175,52 +180,51 @@ const SpinWheel: React.FC = () => {
             </svg>
 
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-amber-600">
-              <Gift className="w-8 h-8 text-amber-600" />
+           <Image src="/mayaLog.png" alt="" width={70} height={70}/>
             </div>
           </div>
         </div>
       </div>
 
       <div className="flex gap-4 mb-8">
-      { !hasSpun &&<button
-          onClick={spinWheel}
-          disabled={isSpinning || hasSpun}
-          className={`px-8 py-4 rounded-full   font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg ${
-            isSpinning
-              ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-              : `bg-gradient-to-r from-orange-500 ${
-                  hasSpun ? "cursor-not-allowed" : "cursor-pointer"
-                } to-red-500 text-white hover:from-orange-600 hover:to-red-600 active:scale-95`
-          }`}
-        >
-          {isSpinning ? "Spinning..." : "SPIN NOW!"}
-        </button>}
-{/* 
-        <button
-          onClick={resetWheel}
-          className="px-6 py-4 cursor-pointer rounded-full font-bold text-lg bg-gradient-to-r from-gray-500 to-gray-600 text-white hover:from-gray-600 hover:to-gray-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg"
-        >
-          <RotateCcw className="w-5 h-5" />
-        </button> */}
+        {!hasSpun && (
+          <button
+            onClick={spinWheel}
+            disabled={isSpinning || hasSpun}
+            className={`px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg ${
+              isSpinning
+                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                : `bg-gradient-to-r from-orange-500 ${
+                    hasSpun ? "cursor-not-allowed" : "cursor-pointer"
+                  } to-red-500 text-white hover:from-orange-600 hover:to-red-600 active:scale-95`
+            }`}
+          >
+            {isSpinning ? "Spinning..." : "SPIN NOW!"}
+          </button>
+        )}
       </div>
 
       {selectedPrize && (
         <div className="bg-white mt-2 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 border-4 border-yellow-400 animate-bounce">
           <div className="text-center">
             <div className="text-6xl mb-4">{selectedPrize.icon}</div>
-            {selectedPrize.text==="Better Luck Next Time"?<h2 className="text-2xl font-bold text-gray-800 mb-2">
-              Oops!
-            </h2>:<h2 className="text-2xl font-bold text-gray-800 mb-2">
-              Congratulations!
-            </h2>}
+            {selectedPrize.text === "Better Luck Next Time" ? (
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Oops!</h2>
+            ) : (
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                Congratulations!
+              </h2>
+            )}
             <p className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500 mb-4">
               {selectedPrize.text !== "Better Luck Next Time"
                 ? `You won: ${selectedPrize.text}`
                 : selectedPrize.text}
             </p>
-            {selectedPrize.text !== "Better Luck Next Time"&&<p className="text-gray-600 text-sm">
-              Use this offer on your next purchase of premium crackers!
-            </p>}
+            {selectedPrize.text !== "Better Luck Next Time" && (
+              <p className="text-gray-600 text-sm">
+                Use this offer on your next purchase of premium crackers!
+              </p>
+            )}
           </div>
         </div>
       )}
