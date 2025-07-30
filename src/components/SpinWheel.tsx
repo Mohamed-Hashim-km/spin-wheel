@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useRef } from 'react';
-import { Gift, RotateCcw, Sparkles } from 'lucide-react';
+import React, { useState, useRef } from "react";
+import { Gift, RotateCcw, Sparkles } from "lucide-react";
 
 interface Prize {
   id: number;
@@ -11,14 +11,13 @@ interface Prize {
 }
 
 const prizes: Prize[] = [
-  { id: 1, text: '10% OFF', color: '#FF6B35', textColor: '#FFFFFF', icon: '🎯' },
-  { id: 2, text: '25% OFF', color: '#FFD23F', textColor: '#2D1810', icon: '⚡' },
-  { id: 3, text: '5% OFF', color: '#118AB2', textColor: '#FFFFFF', icon: '💫' },
-  { id: 4, text: '15% OFF', color: '#E74C3C', textColor: '#FFFFFF', icon: '🔥' },
-  { id: 5, text: 'Better Luck Next Time', color: '#95A5A6', textColor: '#FFFFFF', icon: '🙁' },
-  { id: 6, text: '30% OFF', color: '#2ECC71', textColor: '#FFFFFF', icon: '🎉' }, // <-- updated here
+  { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🎯" },
+  { id: 2, text: "25% OFF", color: "#FFD23F", textColor: "#2D1810", icon: "⚡" },
+  { id: 3, text: "5% OFF", color: "#118AB2", textColor: "#FFFFFF", icon: "💫" },
+  { id: 4, text: "15% OFF", color: "#E74C3C", textColor: "#FFFFFF", icon: "🔥" },
+  { id: 5, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
+  { id: 6, text: "30% OFF", color: "#2ECC71", textColor: "#FFFFFF", icon: "🎉" },
 ];
-
 
 const SpinWheel: React.FC = () => {
   const [isSpinning, setIsSpinning] = useState(false);
@@ -28,39 +27,37 @@ const SpinWheel: React.FC = () => {
   const wheelRef = useRef<HTMLDivElement>(null);
   const [hasSpun, setHasSpun] = useState(false);
 
+  const spinWheel = () => {
+    if (isSpinning || hasSpun) return;
 
- const spinWheel = () => {
-  if (isSpinning || hasSpun) return;
+    setIsSpinning(true);
+    setSelectedPrize(null);
+    setShowConfetti(false);
 
-  setIsSpinning(true);
-  setSelectedPrize(null);
-  setShowConfetti(false);
+    const prizeAngle = 360 / prizes.length;
+    const selectedIndex = Math.floor(Math.random() * prizes.length);
+    const randomOffset = Math.random() * prizeAngle - prizeAngle / 2;
+    const rotationToPrize = 360 - (selectedIndex * prizeAngle + prizeAngle / 2) + randomOffset;
+    const fullRotations = 5;
+    const totalRotation = fullRotations * 360 + rotationToPrize;
 
-  const prizeAngle = 360 / prizes.length;
-  const selectedIndex = Math.floor(Math.random() * prizes.length);
-  const randomOffset = Math.random() * prizeAngle - prizeAngle / 2;
-  const rotationToPrize = 360 - (selectedIndex * prizeAngle + prizeAngle / 2) + randomOffset;
-  const fullRotations = 5;
-  const totalRotation = fullRotations * 360 + rotationToPrize;
+    setRotation(totalRotation);
 
-  setRotation(totalRotation);
+    setTimeout(() => {
+      setIsSpinning(false);
+      setSelectedPrize(prizes[selectedIndex]);
+      setShowConfetti(true);
+      setHasSpun(true);
+      setTimeout(() => setShowConfetti(false), 3000);
+    }, 3000);
+  };
 
-  setTimeout(() => {
-    setIsSpinning(false);
-    setSelectedPrize(prizes[selectedIndex]);
-    setShowConfetti(true);
-    setHasSpun(true); // <-- prevent further spins
-    setTimeout(() => setShowConfetti(false), 3000);
-  }, 3000);
-};
-
-const resetWheel = () => {
-  setRotation(0);
-  setSelectedPrize(null);
-  setShowConfetti(false);
-  setHasSpun(false); 
-};
-
+  const resetWheel = () => {
+    setRotation(0);
+    setSelectedPrize(null);
+    setShowConfetti(false);
+    setHasSpun(false);
+  };
 
   const renderWheelSegments = () => {
     const segmentAngle = 360 / prizes.length;
@@ -99,8 +96,21 @@ const resetWheel = () => {
             transform={`rotate(${midAngle + 90}, ${textX}, ${textY})`}
             className="pointer-events-none font-sans"
           >
-            <tspan x={textX} dy="-8">{prize.icon}</tspan>
-            <tspan x={textX} dy="16">{prize.text}</tspan>
+            <tspan x={textX} dy="-10">{prize.icon}</tspan>
+            {prize.text.length > 12 ? (
+              <>
+                <tspan x={textX} dy="14">
+                  {prize.text.slice(0, 12)}
+                </tspan>
+                <tspan x={textX} dy="14">
+                  {prize.text.slice(12)}
+                </tspan>
+              </>
+            ) : (
+              <tspan x={textX} dy="14">
+                {prize.text}
+              </tspan>
+            )}
           </text>
         </g>
       );
@@ -146,17 +156,18 @@ const resetWheel = () => {
           <div
             ref={wheelRef}
             className={`relative w-80 h-80 rounded-full shadow-2xl transition-transform duration-[3000ms] ease-out ${
-              isSpinning ? 'animate-pulse' : ''
+              isSpinning ? "animate-pulse" : ""
             }`}
             style={{
               transform: `rotate(${rotation}deg)`,
-              background: 'conic-gradient(from 0deg, #FF6B35, #F7931E, #FFD23F, #06D6A0, #118AB2, #8E44AD, #E74C3C, #2ECC71)',
+              background:
+                "conic-gradient(from 0deg, #FF6B35, #F7931E, #FFD23F, #06D6A0, #118AB2, #8E44AD, #E74C3C, #2ECC71)",
             }}
           >
             <svg
               className="w-full h-full"
               viewBox="0 0 300 300"
-              style={{ transform: 'rotate(-90deg)' }}
+              style={{ transform: "rotate(-90deg)" }}
             >
               {renderWheelSegments()}
             </svg>
@@ -171,15 +182,16 @@ const resetWheel = () => {
       <div className="flex gap-4 mb-8">
         <button
           onClick={spinWheel}
-       disabled={isSpinning || hasSpun}
-
+          disabled={isSpinning || hasSpun}
           className={`px-8 py-4 rounded-full   font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg ${
-            isSpinning 
-              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-              : `bg-gradient-to-r from-orange-500 ${hasSpun?"cursor-not-allowed":"cursor-pointer"} to-red-500 text-white hover:from-orange-600 hover:to-red-600 active:scale-95`
+            isSpinning
+              ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+              : `bg-gradient-to-r from-orange-500 ${
+                  hasSpun ? "cursor-not-allowed" : "cursor-pointer"
+                } to-red-500 text-white hover:from-orange-600 hover:to-red-600 active:scale-95`
           }`}
         >
-          {isSpinning ? 'Spinning...' : 'SPIN NOW!'}
+          {isSpinning ? "Spinning..." : "SPIN NOW!"}
         </button>
 
         <button
@@ -209,8 +221,9 @@ const resetWheel = () => {
 
       <div className="mt-8 text-center max-w-2xl mx-4">
         <p className="text-amber-800 text-sm md:text-base leading-relaxed">
-          Click "SPIN NOW!" to discover your exclusive discount. Each spin offers a chance to win 
-          amazing deals on our premium crackers collection. Good luck! 🍪
+          Click "SPIN NOW!" to discover your exclusive discount. Each spin
+          offers a chance to win amazing deals on our premium crackers
+          collection. Good luck! 🍪
         </p>
       </div>
     </div>
