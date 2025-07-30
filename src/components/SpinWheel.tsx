@@ -12,7 +12,9 @@ interface Prize {
 
 const prizes: Prize[] = [
   { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🎯" },
+  { id: 5, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
   { id: 2, text: "25% OFF", color: "#FFD23F", textColor: "#2D1810", icon: "⚡" },
+  { id: 5, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
   { id: 3, text: "5% OFF", color: "#118AB2", textColor: "#FFFFFF", icon: "💫" },
   { id: 4, text: "15% OFF", color: "#E74C3C", textColor: "#FFFFFF", icon: "🔥" },
   { id: 5, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
@@ -140,7 +142,7 @@ const SpinWheel: React.FC = () => {
 
       <div className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold text-amber-900 mb-2 tracking-tight">
-          Lucky Spin Wheel
+          Maya Traders
         </h1>
         <p className="text-amber-700 text-lg md:text-xl font-medium">
           Spin to win amazing discounts on premium crackers!
@@ -180,7 +182,7 @@ const SpinWheel: React.FC = () => {
       </div>
 
       <div className="flex gap-4 mb-8">
-        <button
+      { !hasSpun &&<button
           onClick={spinWheel}
           disabled={isSpinning || hasSpun}
           className={`px-8 py-4 rounded-full   font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg ${
@@ -192,14 +194,14 @@ const SpinWheel: React.FC = () => {
           }`}
         >
           {isSpinning ? "Spinning..." : "SPIN NOW!"}
-        </button>
-
+        </button>}
+{/* 
         <button
           onClick={resetWheel}
           className="px-6 py-4 cursor-pointer rounded-full font-bold text-lg bg-gradient-to-r from-gray-500 to-gray-600 text-white hover:from-gray-600 hover:to-gray-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg"
         >
           <RotateCcw className="w-5 h-5" />
-        </button>
+        </button> */}
       </div>
 
       {selectedPrize && (
