@@ -208,15 +208,19 @@ const SpinWheel: React.FC = () => {
         <div className="bg-white mt-2 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 border-4 border-yellow-400 animate-bounce">
           <div className="text-center">
             <div className="text-6xl mb-4">{selectedPrize.icon}</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            {selectedPrize.text==="Better Luck Next Time"?<h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Oops!
+            </h2>:<h2 className="text-2xl font-bold text-gray-800 mb-2">
               Congratulations!
-            </h2>
+            </h2>}
             <p className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500 mb-4">
-              You won: {selectedPrize.text}
+              {selectedPrize.text !== "Better Luck Next Time"
+                ? `You won: ${selectedPrize.text}`
+                : selectedPrize.text}
             </p>
-            <p className="text-gray-600 text-sm">
+            {selectedPrize.text !== "Better Luck Next Time"&&<p className="text-gray-600 text-sm">
               Use this offer on your next purchase of premium crackers!
-            </p>
+            </p>}
           </div>
         </div>
       )}
