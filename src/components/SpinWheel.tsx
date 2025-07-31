@@ -123,7 +123,15 @@ const SpinWheel: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 flex flex-col items-center justify-center p-4">
+      <div
+      className="min-h-screen flex flex-col items-center justify-center p-4"
+      style={{
+        backgroundImage: "url('/crackersBg/2.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-50">
           {[...Array(50)].map((_, i) => (
@@ -145,11 +153,11 @@ const SpinWheel: React.FC = () => {
 
       <div className="text-center mb-8">
    
-        <h1 className="text-4xl md:text-5xl font-bold text-amber-900 mb-2 tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-bold text-yellow-500 mb-2 tracking-tight">
           Maya Traders
         </h1>
       
-        <p className="text-amber-700 text-lg md:text-xl font-medium">
+        <p className="text-yellow-500 text-lg md:text-xl font-medium">
           Spin to win amazing discounts on premium crackers!
         </p>
       </div>
@@ -179,8 +187,8 @@ const SpinWheel: React.FC = () => {
               {renderWheelSegments()}
             </svg>
 
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-amber-600">
-           <Image src="/mayaLog.png" alt="" width={70} height={70}/>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-amber-600">
+           <Image src="/mayaLog.png" alt="" width={100} height={100}/>
             </div>
           </div>
         </div>
@@ -230,7 +238,7 @@ const SpinWheel: React.FC = () => {
       )}
 
       <div className="mt-8 text-center max-w-2xl mx-4">
-        <p className="text-amber-800 text-sm md:text-base leading-relaxed">
+        <p className="text-white text-sm md:text-base leading-relaxed">
           Click "SPIN NOW!" to discover your exclusive discount. Each spin
           offers a chance to win amazing deals on our premium crackers
           collection. Good luck! 🍪
