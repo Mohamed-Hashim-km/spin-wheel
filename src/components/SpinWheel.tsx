@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useRef } from "react";
-import { Gift, RotateCcw, Sparkles } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Sparkles } from "lucide-react";
 import Image from "next/image";
 
 interface Prize {
@@ -12,18 +12,17 @@ interface Prize {
 }
 
 const prizes: Prize[] = [
-  { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🏷️" }, // Discount tag
-  { id: 2, text: "Large Fury Sky Shot", color: "#FFD23F", textColor: "#2D1810", icon: "🚀" }, // Firework explosion
-  { id: 3, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" }, // Grey for loss
-  { id: 4, text: "30 Shots", color: "#1E90FF", textColor: "#FFFFFF", icon: "🎇" }, // Multiple spark effects
-  { id: 5, text: "Atom Bomb", color: "#E74C3C", textColor: "#FFFFFF", icon: "💣" }, // Explosion icon
-  { id: 6, text: "25% OFF", color: "#27AE60", textColor: "#FFFFFF", icon: "🏷️" }, // Green for good deals
-  { id: 7, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" }, // Same grey loss
-  { id: 8, text: "Drone", color: "#8E44AD", textColor: "#FFFFFF", icon: "🎇" }, // Helicopter/drone
-  { id: 9, text: "Fountains", color: "#F39C12", textColor: "#FFFFFF", icon: "🚀" }, // Fountain shape
-  { id: 10, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" }, // Loss again
+  { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🏷️" },
+  { id: 2, text: "Large Fury Sky Shot", color: "#FFD23F", textColor: "#2D1810", icon: "🚀" },
+  { id: 3, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" },
+  { id: 4, text: "30 Shots", color: "#1E90FF", textColor: "#FFFFFF", icon: "🎇" },
+  { id: 5, text: "Atom Bomb", color: "#E74C3C", textColor: "#FFFFFF", icon: "💣" },
+  { id: 6, text: "25% OFF", color: "#27AE60", textColor: "#FFFFFF", icon: "🏷️" },
+  { id: 7, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" },
+  { id: 8, text: "Drone", color: "#8E44AD", textColor: "#FFFFFF", icon: "🎇" },
+  { id: 9, text: "Fountains", color: "#F39C12", textColor: "#FFFFFF", icon: "🚀" },
+  { id: 10, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" },
 ];
-
 
 const SpinWheel: React.FC = () => {
   const [isSpinning, setIsSpinning] = useState(false);
@@ -32,6 +31,14 @@ const SpinWheel: React.FC = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const wheelRef = useRef<HTMLDivElement>(null);
   const [hasSpun, setHasSpun] = useState(false);
+
+  useEffect(() => {
+    const storedPrize = localStorage.getItem("selectedPrize");
+    if (storedPrize) {
+      setSelectedPrize(JSON.parse(storedPrize));
+      setHasSpun(true);
+    }
+  }, []);
 
   const spinWheel = () => {
     if (isSpinning || hasSpun) return;
@@ -50,19 +57,17 @@ const SpinWheel: React.FC = () => {
     setRotation(totalRotation);
 
     setTimeout(() => {
+      const prizeWon = prizes[selectedIndex];
       setIsSpinning(false);
-      setSelectedPrize(prizes[selectedIndex]);
+      setSelectedPrize(prizeWon);
       setShowConfetti(true);
       setHasSpun(true);
+
+      // Store the prize in localStorage
+      localStorage.setItem("selectedPrize", JSON.stringify(prizeWon));
+
       setTimeout(() => setShowConfetti(false), 3000);
     }, 3000);
-  };
-
-  const resetWheel = () => {
-    setRotation(0);
-    setSelectedPrize(null);
-    setShowConfetti(false);
-    setHasSpun(false);
   };
 
   const renderWheelSegments = () => {
@@ -102,18 +107,18 @@ const SpinWheel: React.FC = () => {
             transform={`rotate(${midAngle + 90}, ${textX}, ${textY})`}
             className="pointer-events-none font-sans"
           >
-            <tspan x={textX} dy="-10"><tspan className="text-[10px]">{prize.icon}</tspan></tspan>
+            <tspan x={textX} dy="-10">{prize.icon}</tspan>
             {prize.text === "Better Luck Next Time" ? (
               <>
                 <tspan x={textX} dy="14">Better Luck</tspan>
                 <tspan x={textX} dy="14">Next Time</tspan>
               </>
-            ) :   prize.text === "Large Fury Sky Shot" ? (
+            ) : prize.text === "Large Fury Sky Shot" ? (
               <>
                 <tspan x={textX} dy="14">Large Fury</tspan>
                 <tspan x={textX} dy="14">Sky Shot</tspan>
               </>
-            ): prize.text.length > 12 ? (
+            ) : prize.text.length > 12 ? (
               <>
                 <tspan x={textX} dy="14">{prize.text.slice(0, 12)}</tspan>
                 <tspan x={textX} dy="14">{prize.text.slice(12)}</tspan>
@@ -128,7 +133,7 @@ const SpinWheel: React.FC = () => {
   };
 
   return (
-      <div
+    <div
       className="min-h-screen flex flex-col items-center justify-center p-4"
       style={{
         backgroundImage: "url('/crackersBg/2.jpg')",
@@ -157,11 +162,9 @@ const SpinWheel: React.FC = () => {
       )}
 
       <div className="text-center mb-8">
-   
         <h1 className="text-4xl md:text-5xl font-bold text-yellow-500 mb-2 tracking-tight">
           Maya Traders
         </h1>
-      
         <p className="text-yellow-500 text-lg md:text-xl font-medium">
           Spin to win amazing discounts on premium crackers!
         </p>
@@ -193,7 +196,7 @@ const SpinWheel: React.FC = () => {
             </svg>
 
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-amber-600">
-           <Image src="/mayaLog.png" alt="" width={100} height={100}/>
+              <Image src="/mayaLog.png" alt="" width={100} height={100}/>
             </div>
           </div>
         </div>
@@ -222,7 +225,7 @@ const SpinWheel: React.FC = () => {
           <div className="text-center">
             <div className="text-6xl mb-4">{selectedPrize.icon}</div>
             {selectedPrize.text === "Better Luck Next Time" ? (
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Oops!</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Light up your celebrations! Visit our store for exclusive firecracker offers and festive fun.</h2>
             ) : (
               <h2 className="text-2xl font-bold text-gray-800 mb-2">
                 Congratulations!
@@ -231,7 +234,7 @@ const SpinWheel: React.FC = () => {
             <p className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500 mb-4">
               {selectedPrize.text !== "Better Luck Next Time"
                 ? `You won: ${selectedPrize.text}`
-                : selectedPrize.text}
+                : selectedPrize.text !== "Better Luck Next Time" && selectedPrize.text}
             </p>
             {selectedPrize.text !== "Better Luck Next Time" && (
               <p className="text-gray-600 text-sm">
