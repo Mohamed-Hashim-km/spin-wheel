@@ -12,18 +12,18 @@ interface Prize {
 }
 
 const prizes: Prize[] = [
-  { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🎯" },
-  { id: 2, text: "25% OFF", color: "#FFD23F", textColor: "#2D1810", icon: "⚡" },
-  { id: 10, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
-  { id: 3, text: "5% OFF", color: "#118AB2", textColor: "#FFFFFF", icon: "💫" },
-  { id: 4, text: "15% OFF", color: "#E74C3C", textColor: "#FFFFFF", icon: "🔥" },
-  { id: 5, text: "5% OFF", color: "#118AB2", textColor: "#FFFFFF", icon: "💫" },
-  { id: 6, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
-  { id: 7, text: "30% OFF", color: "#2ECC71", textColor: "#FFFFFF", icon: "🎉" },
-  { id: 8, text: "5% OFF", color: "#118AB2", textColor: "#FFFFFF", icon: "💫" },
-  { id: 9, text: "Better Luck Next Time", color: "#95A5A6", textColor: "#FFFFFF", icon: "🙁" },
-  
+  { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🏷️" }, // Discount tag
+  { id: 2, text: "Large Fury Sky Shot", color: "#FFD23F", textColor: "#2D1810", icon: "🚀" }, // Firework explosion
+  { id: 3, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" }, // Grey for loss
+  { id: 4, text: "30 Shots", color: "#1E90FF", textColor: "#FFFFFF", icon: "🎇" }, // Multiple spark effects
+  { id: 5, text: "Atom Bomb", color: "#E74C3C", textColor: "#FFFFFF", icon: "💣" }, // Explosion icon
+  { id: 6, text: "25% OFF", color: "#27AE60", textColor: "#FFFFFF", icon: "🏷️" }, // Green for good deals
+  { id: 7, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" }, // Same grey loss
+  { id: 8, text: "Drone", color: "#8E44AD", textColor: "#FFFFFF", icon: "🎇" }, // Helicopter/drone
+  { id: 9, text: "Fountains", color: "#F39C12", textColor: "#FFFFFF", icon: "🚀" }, // Fountain shape
+  { id: 10, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" }, // Loss again
 ];
+
 
 const SpinWheel: React.FC = () => {
   const [isSpinning, setIsSpinning] = useState(false);
@@ -108,7 +108,12 @@ const SpinWheel: React.FC = () => {
                 <tspan x={textX} dy="14">Better Luck</tspan>
                 <tspan x={textX} dy="14">Next Time</tspan>
               </>
-            ) : prize.text.length > 12 ? (
+            ) :   prize.text === "Large Fury Sky Shot" ? (
+              <>
+                <tspan x={textX} dy="14">Large Fury</tspan>
+                <tspan x={textX} dy="14">Sky Shot</tspan>
+              </>
+            ): prize.text.length > 12 ? (
               <>
                 <tspan x={textX} dy="14">{prize.text.slice(0, 12)}</tspan>
                 <tspan x={textX} dy="14">{prize.text.slice(12)}</tspan>
