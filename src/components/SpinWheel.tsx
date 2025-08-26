@@ -14,14 +14,12 @@ interface Prize {
 const prizes: Prize[] = [
   { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🏷️" },
   { id: 2, text: "Large Fury Sky Shot", color: "#FFD23F", textColor: "#2D1810", icon: "🚀" },
-  { id: 3, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" },
   { id: 4, text: "30 Shots", color: "#1E90FF", textColor: "#FFFFFF", icon: "🎇" },
   { id: 5, text: "Atom Bomb", color: "#E74C3C", textColor: "#FFFFFF", icon: "💣" },
   { id: 6, text: "25% OFF", color: "#27AE60", textColor: "#FFFFFF", icon: "🏷️" },
-  { id: 7, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" },
+ 
   { id: 8, text: "Drone", color: "#8E44AD", textColor: "#FFFFFF", icon: "🎇" },
   { id: 9, text: "Fountains", color: "#F39C12", textColor: "#FFFFFF", icon: "🚀" },
-  { id: 10, text: "Better Luck Next Time", color: "#7F8C8D", textColor: "#FFFFFF", icon: "🙁" },
 ];
 
 const SpinWheel: React.FC = () => {
