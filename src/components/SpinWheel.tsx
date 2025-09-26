@@ -242,13 +242,15 @@ const SpinWheel: React.FC = () => {
           </div>
         </div>
       )}
-
-      <div className="mt-8 text-center max-w-2xl mx-4">
-        <p className="text-white text-sm md:text-base leading-relaxed">
+<div className="bg-black/50 backdrop-blur-xs  to-transparent">
+      <div className="my-8 text-center   max-w-2xl mx-4">
+        <p className="text-white text-sm  md:text-base leading-relaxed">
           Click "SPIN NOW!" to discover your exclusive discount. Each spin
           offers a chance to win amazing deals on our premium crackers
           collection. Good luck! 🍪
         </p>
+       
+      </div>
       </div>
     </div>
   );
