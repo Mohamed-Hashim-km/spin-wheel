@@ -339,30 +339,25 @@ const SpinWheel: React.FC = () => {
                 className="custom-phone-input border rounded-lg"
                 placeholder="Enter phone number"
               />
-              <div className="flex justify-end gap-3">
+                   <div className="flex justify-end gap-3">
                 <button
                   type="button"
                   disabled={isLoading}
                   onClick={() => setShowModal(false)}
-                  className={`px-4 py-2 ${isLoading ? "opacity-0" : "opacity-100"} rounded-lg bg-gray-300 text-white hover:bg-gray-400`}
+                  className={`px-4 py-2 rounded-lg  bg-gray-300 text-white hover:bg-gray-400 ${
+                    isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  }`}
                 >
                   Cancel
                 </button>
-                {isLoading ? (
-                  <div>
-                    {" "}
-                    <button className="">
-                      <Loader />
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    {" "}
-                    <button type="submit" className="px-4 cursor-pointer py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">
-                      Submit
-                    </button>
-                  </div>
-                )}
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 flex items-center justify-center"
+                >
+                  {isLoading ? <Loader /> : "Submit"}
+                </button>
               </div>
             </form>
           </div>
