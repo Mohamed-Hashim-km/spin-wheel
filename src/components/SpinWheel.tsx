@@ -328,7 +328,7 @@ const SpinWheel: React.FC = () => {
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 required
-                className="w-full px-4 py-2 border rounded-lg"
+                className="w-full text-black px-4 py-2 border rounded-lg"
               />
               <PhoneInputStyles />
               <PhoneInput
@@ -344,7 +344,7 @@ const SpinWheel: React.FC = () => {
                   type="button"
                   disabled={isLoading}
                   onClick={() => setShowModal(false)}
-                  className={`px-4 py-2 ${isLoading ? "opacity-0" : "opacity-100"} rounded-lg bg-gray-300 hover:bg-gray-400`}
+                  className={`px-4 py-2 ${isLoading ? "opacity-0" : "opacity-100"} rounded-lg bg-gray-300 text-white hover:bg-gray-400`}
                 >
                   Cancel
                 </button>

@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: "Mangalore Fireworks Delivery - Maya Traders",
     images: [
       {
-        url: "https://mangalorefireworksdelivery.com/logo.png", // replace with actual logo/OG image
+        url: "https://mayatraders.in/wp-content/uploads/2024/09/LOGO.jpg", // replace with actual logo/OG image
         width: 1200,
         height: 630,
         alt: "Maya Traders Lucky Spin Wheel",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     title: "Maya Traders Spin Wheel | Mangalore Fireworks Delivery",
     description:
       "Try your luck with the Maya Traders Lucky Spin Wheel and win eco-friendly fireworks today!",
-    images: ["https://mangalorefireworksdelivery.com/logo.png"], // replace with actual logo/OG image
+    images: ["https://mayatraders.in/wp-content/uploads/2024/09/LOGO.jpg"], // replace with actual logo/OG image
   },
   metadataBase: new URL("https://mangalorefireworksdelivery.com"),
 };
