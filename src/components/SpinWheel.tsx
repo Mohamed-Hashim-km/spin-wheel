@@ -15,17 +15,12 @@ interface Prize {
   icon: string;
 }
 
-const prizes: Prize[] = [
-  { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🏷️" },
-  { id: 2, text: "Large Fury Sky Shot", color: "#FFD23F", textColor: "#FFFFFF", icon: "🚀" },
-  { id: 4, text: "30 Shots", color: "#1E90FF", textColor: "#FFFFFF", icon: "🎇" },
-  { id: 5, text: "Atom Bomb", color: "#E74C3C", textColor: "#FFFFFF", icon: "💣" },
-  { id: 6, text: "25% OFF", color: "#27AE60", textColor: "#FFFFFF", icon: "🏷️" },
-  { id: 8, text: "Drone", color: "#8E44AD", textColor: "#FFFFFF", icon: "🎇" },
-  { id: 9, text: "Fountains", color: "#F39C12", textColor: "#FFFFFF", icon: "🚀" },
-];
+interface SpinWheelProps {
+  pageKey: string;
+  googleScriptUrl: string;
+  prizes: Prize[];
+}
 
-// Custom styles for PhoneInput
 const PhoneInputStyles = () => (
   <style>{`
     .custom-phone-input {
@@ -52,7 +47,7 @@ const PhoneInputStyles = () => (
   `}</style>
 );
 
-const SpinWheel: React.FC = () => {
+const SpinWheel: React.FC<SpinWheelProps> = ({ pageKey, googleScriptUrl, prizes }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
   const [rotation, setRotation] = useState(0);
@@ -68,22 +63,21 @@ const SpinWheel: React.FC = () => {
   const [offerCode, setOfferCode] = useState<string | null>(null);
   const [offerClaimed, setOfferClaimed] = useState(false);
 
+  // Load from storage
   useEffect(() => {
-    const storedClaimed = localStorage.getItem("offerClaimed");
-    const storedCode = localStorage.getItem("offerCode");
+    const storedClaimed = localStorage.getItem(`${pageKey}_offerClaimed`);
+    const storedCode = localStorage.getItem(`${pageKey}_offerCode`);
     if (storedClaimed === "true" && storedCode) {
       setOfferClaimed(true);
       setOfferCode(storedCode);
     }
-  }, []);
 
-  useEffect(() => {
-    const storedPrize = localStorage.getItem("selectedPrize");
+    const storedPrize = localStorage.getItem(`${pageKey}_selectedPrize`);
     if (storedPrize) {
       setSelectedPrize(JSON.parse(storedPrize));
       setHasSpun(true);
     }
-  }, []);
+  }, [pageKey]);
 
   const spinWheel = () => {
     if (isSpinning || hasSpun) return;
@@ -108,7 +102,7 @@ const SpinWheel: React.FC = () => {
       setShowConfetti(true);
       setHasSpun(true);
 
-      localStorage.setItem("selectedPrize", JSON.stringify(prizeWon));
+      localStorage.setItem(`${pageKey}_selectedPrize`, JSON.stringify(prizeWon));
       setTimeout(() => setShowConfetti(false), 3000);
     }, 3000);
   };
@@ -132,7 +126,7 @@ const SpinWheel: React.FC = () => {
 
       return (
         <g key={`${prize.id}-${index}`}>
-          <path d={pathData} fill={prize.color} stroke="#FFFFFF" strokeWidth="2" className="transition-all duration-300 hover:brightness-110" />
+          <path d={pathData} fill={prize.color} stroke="#FFFFFF" strokeWidth="2" />
           <text
             x={textX}
             y={textY}
@@ -142,27 +136,17 @@ const SpinWheel: React.FC = () => {
             textAnchor="middle"
             dominantBaseline="middle"
             transform={`rotate(${midAngle + 90}, ${textX}, ${textY})`}
-            className="pointer-events-none font-sans"
           >
-            <tspan x={textX} dy="-10">
-              {prize.icon}
-            </tspan>
-            <tspan x={textX} dy="14">
-              {prize.text}
-            </tspan>
+            <tspan x={textX} dy="-10">{prize.icon}</tspan>
+            <tspan x={textX} dy="14">{prize.text}</tspan>
           </text>
         </g>
       );
     });
   };
 
-  // Generate random offer code
-  const generateOfferCode = () => {
-    return "MAYA" + Math.floor(1000 + Math.random() * 9000);
-  };
+  const generateOfferCode = () => "MAYA" + Math.floor(1000 + Math.random() * 9000);
 
-  // Handle claim form submit
-  // Handle claim form submit
   const handleClaimSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPrize) return;
@@ -174,11 +158,8 @@ const SpinWheel: React.FC = () => {
     setIsLoading(true);
     const code = generateOfferCode();
     setOfferCode(code);
-    console.log("Generated Offer Code:", code, selectedPrize.text, userName, userPhone);
 
     try {
-      // Save to Google Sheets
-      const googleScriptUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL!;
       const response = await fetch(googleScriptUrl, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -191,13 +172,12 @@ const SpinWheel: React.FC = () => {
       });
 
       const result = await response.json();
-
       if (result.success) {
         setIsLoading(false);
         toast.success("Your offer is saved!");
         setOfferClaimed(true);
-        localStorage.setItem("offerClaimed", "true");
-        localStorage.setItem("offerCode", code);
+        localStorage.setItem(`${pageKey}_offerClaimed`, "true");
+        localStorage.setItem(`${pageKey}_offerCode`, code);
         setOfferCode(code);
         setShowModal(false);
       } else {
@@ -212,58 +192,47 @@ const SpinWheel: React.FC = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center p-4"
+    <div className="min-h-screen flex flex-col items-center justify-center p-4"
       style={{
         backgroundImage: "url('/crackersBg/2.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+      }}>
+      {/* Confetti */}
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-50">
           {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-bounce"
+            <div key={i} className="absolute animate-bounce"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 2}s`,
                 animationDuration: `${2 + Math.random() * 2}s`,
-              }}
-            >
+              }}>
               <Sparkles className="text-yellow-500 w-4 h-4" />
             </div>
           ))}
         </div>
       )}
 
+      {/* Title */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold text-yellow-500 mb-2 tracking-tight">Maya Traders</h1>
-        <p className="text-yellow-500 text-lg md:text-xl font-medium">Spin to win amazing discounts on premium crackers!</p>
+        <h1 className="text-4xl md:text-5xl font-bold text-yellow-500 mb-2">Maya Traders</h1>
+        <p className="text-yellow-500 text-lg md:text-xl">Spin to win amazing discounts!</p>
       </div>
 
+      {/* Wheel */}
       <div className="relative mb-8">
         <div className="relative">
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-20">
-            <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[25px] border-l-transparent border-r-transparent rotate-180 border-b-red-600 drop-shadow-lg"></div>
+            <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[25px] border-l-transparent border-r-transparent rotate-180 border-b-red-600"></div>
           </div>
-
-          <div
-            ref={wheelRef}
-            className={`relative w-full md:w-[500px] md:h-[500px] rounded-full shadow-2xl transition-transform duration-[3000ms] ease-out ${
-              isSpinning ? "animate-pulse" : ""
-            }`}
-            style={{
-              transform: `rotate(${rotation}deg)`,
-            }}
-          >
+          <div ref={wheelRef}
+            className={`relative w-full md:w-[500px] md:h-[500px] rounded-full shadow-2xl transition-transform duration-[3000ms] ease-out ${isSpinning ? "animate-pulse" : ""}`}
+            style={{ transform: `rotate(${rotation}deg)` }}>
             <svg className="w-full h-full" viewBox="0 0 300 300" style={{ transform: "rotate(-90deg)" }}>
               {renderWheelSegments()}
             </svg>
-
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-amber-600">
               <Image src="/mayaLog.png" alt="" width={100} height={100} />
             </div>
@@ -271,41 +240,27 @@ const SpinWheel: React.FC = () => {
         </div>
       </div>
 
+      {/* Spin Button */}
       <div className="flex gap-4 mb-8">
         {!hasSpun && (
-          <button
-            onClick={spinWheel}
-            disabled={isSpinning || hasSpun}
-            className={`px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg ${
-              isSpinning
-                ? ""
-                : "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 cursor-pointer hover:to-red-600 active:scale-95"
-            }`}
-          >
-            {isSpinning ? (
-              <div className="spinner">
-                <div className="spinnerin"></div>
-              </div>
-            ) : (
-              "SPIN NOW!"
-            )}
+          <button onClick={spinWheel} disabled={isSpinning || hasSpun}
+            className="px-8 py-4 rounded-full font-bold text-lg bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 active:scale-95">
+            {isSpinning ? <Loader /> : "SPIN NOW!"}
           </button>
         )}
       </div>
 
+      {/* Prize Result */}
       {selectedPrize && (
-        <div className="bg-white mt-2 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 border-4 border-yellow-400 animate-bounce transition-all duration-300 hover:animate-none text-center">
+        <div className="bg-white mt-2 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 border-4 border-yellow-400 text-center">
           <div className="text-6xl mb-4">{selectedPrize.icon}</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Congratulations!</h2>
+          <h2 className="text-2xl font-bold mb-2">Congratulations!</h2>
           <p className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500 mb-4">
             You won: {selectedPrize.text}
           </p>
-
           {!offerClaimed ? (
-            <button
-              onClick={() => setShowModal(true)}
-              className="mt-4 px-6 py-3 cursor-pointer rounded-full bg-green-600 text-white font-bold hover:bg-green-700 transition"
-            >
+            <button onClick={() => setShowModal(true)}
+              className="mt-4 px-6 py-3 rounded-full bg-green-600 text-white font-bold hover:bg-green-700">
               Claim Your Offer
             </button>
           ) : (
@@ -320,44 +275,21 @@ const SpinWheel: React.FC = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4  text-center text-gray-800">Claim Your Offer</h3>
+            <h3 className="text-xl font-bold mb-4 text-center">Claim Your Offer</h3>
             <form onSubmit={handleClaimSubmit} className="space-y-4">
-              <input
-                type="text"
-                placeholder="Your Name"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                required
-                className="w-full text-black px-4 py-2 border rounded-lg"
-              />
+              <input type="text" placeholder="Your Name" value={userName}
+                onChange={(e) => setUserName(e.target.value)} required
+                className="w-full px-4 py-2 border rounded-lg" />
               <PhoneInputStyles />
-              <PhoneInput
-                international
-                defaultCountry="IN"
-                value={userPhone}
-                onChange={(value) => setUserPhone(value || "")}
+              <PhoneInput international defaultCountry="IN"
+                value={userPhone} onChange={(value) => setUserPhone(value || "")}
                 className="custom-phone-input border rounded-lg"
-                placeholder="Enter phone number"
-              />
-                   <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => setShowModal(false)}
-                  className={`px-4 py-2 rounded-lg  bg-gray-300 text-white hover:bg-gray-400 ${
-                    isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                  }`}
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className={`px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 flex items-center justify-center ${
-                    isLoading ? " cursor-not-allowed" : "cursor-pointer"
-                  }`}
-                >
+                placeholder="Enter phone number" />
+              <div className="flex justify-end gap-3">
+                <button type="button" onClick={() => setShowModal(false)}
+                  className="px-4 py-2 rounded-lg bg-gray-300 text-white hover:bg-gray-400">Cancel</button>
+                <button type="submit" disabled={isLoading}
+                  className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 flex items-center justify-center">
                   {isLoading ? <Loader /> : "Submit"}
                 </button>
               </div>
@@ -366,11 +298,10 @@ const SpinWheel: React.FC = () => {
         </div>
       )}
 
-      <div className="bg-black/50 backdrop-blur-xs mt-8 max-w-2xl mx-4 text-center p-4 rounded-xl">
-        <p className="text-white text-sm md:text-base leading-relaxed">
-          Click "SPIN NOW!" to discover your exclusive discount. Each spin offers a chance to win amazing deals on our premium crackers collection.
-          Good luck! 🎆
-        </p>
+      {/* Footer Note */}
+      <div className="bg-black/50 mt-8 max-w-2xl mx-4 text-center p-4 rounded-xl">
+        <p className="text-white text-sm">   Click "SPIN NOW!" to discover your exclusive discount. Each spin offers a chance to win amazing deals on our premium crackers collection.
+          Good luck! 🎆</p>
       </div>
     </div>
   );
