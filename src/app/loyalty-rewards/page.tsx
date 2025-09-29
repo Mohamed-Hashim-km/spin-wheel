@@ -1,21 +1,21 @@
 import SpinWheel from "@/components/SpinWheel";
 
-const prizes = [
-  { id: 1, text: "100 shots", color: "#FF6B35", textColor: "#FFF", icon: "🎇" },
-  { id: 2, text: "150 shots", color: "#FFD23F", textColor: "#FFF", icon: "🎆" },
-  { id: 3, text: "Super Rocket", color: "#1E90FF", textColor: "#FFF", icon: "🚀" },
-  { id: 4, text: "25% Off on Loose Crackers", color: "#27AE60", textColor: "#FFF", icon: "🏷️" },
-  { id: 5, text: "Ultra Fountain", color: "#E74C3C", textColor: "#FFF", icon: "🎆" },
-  { id: 6, text: "Diamond Peacock", color: "#8E44AD", textColor: "#FFF", icon: "🦚" },
-  { id: 7, text: "Drone Pro Max", color: "#F39C12", textColor: "#FFF", icon: "🚁" },
+export const goldPrizes = [
+  { id: 1, text: "10% Off on Loose crackers", color: "#FF6B35", textColor: "#FFF", icon: "🏷️", probability: 15 },
+  { id: 2, text: "10 Shots", color: "#FFD23F", textColor: "#FFF", icon: "🎇", probability: 15 },
+  { id: 3, text: "5x4 = 20 Sky Shots", color: "#1E90FF", textColor: "#FFF", icon: "🎆", probability: 15 },
+  { id: 4, text: "Large Fancy Sky Shots", color: "#E74C3C", textColor: "#FFF", icon: "🎆", probability: 20 },
+  { id: 5, text: "30 Shots", color: "#27AE60", textColor: "#FFF", icon: "🎇", probability: 20 },
+  { id: 6, text: "60 Shots", color: "#8E44AD", textColor: "#FFF", icon: "🎆", probability: 10 },
+  { id: 7, text: "80 Shots", color: "#F39C12", textColor: "#FFF", icon: "🎇", probability: 5 },
 ];
 
 export default function Loyality() {
   return (
     <SpinWheel
       pageKey="loyalty"
-      googleScriptUrl={process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_PLATINUM!}
-      prizes={prizes}
+      googleScriptUrl={process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_LOYALITY!}
+      prizes={goldPrizes}
     />
   );
 }

@@ -127,19 +127,29 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ pageKey, googleScriptUrl, prizes 
       return (
         <g key={`${prize.id}-${index}`}>
           <path d={pathData} fill={prize.color} stroke="#FFFFFF" strokeWidth="2" />
-          <text
-            x={textX}
-            y={textY}
-            fill={prize.textColor}
-            fontSize="9"
-            fontWeight="bold"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            transform={`rotate(${midAngle + 90}, ${textX}, ${textY})`}
-          >
-            <tspan x={textX} dy="-10">{prize.icon}</tspan>
-            <tspan x={textX} dy="14">{prize.text}</tspan>
-          </text>
+         <foreignObject
+  x={textX - 40}   // adjust width based on segment
+  y={textY - 20}
+  width={80}       // max width for wrapping
+  height={40}
+  transform={`rotate(${midAngle + 90}, ${textX}, ${textY})`}
+>
+  <div
+    xmlns="http://www.w3.org/1999/xhtml"
+    style={{
+      fontSize: "9px",
+      fontWeight: "bold",
+      color: prize.textColor,
+      textAlign: "center",
+      wordBreak: "break-word",
+      lineHeight: "1.1",
+    }}
+  >
+    <div className="mb-1">{prize.icon}</div>
+    <div>{prize.text}</div>
+  </div>
+</foreignObject>
+
         </g>
       );
     });
@@ -177,8 +187,8 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ pageKey, googleScriptUrl, prizes 
         toast.success("Your offer is saved!");
         setOfferClaimed(true);
         localStorage.setItem(`${pageKey}_offerClaimed`, "true");
-        localStorage.setItem(`${pageKey}_offerCode`, code);
-        setOfferCode(code);
+        localStorage.setItem(`${pageKey}_offerCode`, selectedPrize.text);
+        setOfferCode(selectedPrize.text);
         setShowModal(false);
       } else {
         toast.error("Failed to save data. Please try again.");
@@ -244,30 +254,31 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ pageKey, googleScriptUrl, prizes 
       <div className="flex gap-4 mb-8">
         {!hasSpun && (
           <button onClick={spinWheel} disabled={isSpinning || hasSpun}
-            className="px-8 py-4 rounded-full font-bold text-lg bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 active:scale-95">
-            {isSpinning ? <Loader /> : "SPIN NOW!"}
+            className={`${!isSpinning&&"px-8 py-4 rounded-full font-bold text-lg bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 active:scale-95"}`}>
+            {isSpinning ?    <div className="spinner">
+                <div className="spinnerin"></div>
+              </div> : "SPIN NOW!"}
           </button>
         )}
       </div>
 
       {/* Prize Result */}
       {selectedPrize && (
-        <div className="bg-white mt-2 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 border-4 border-yellow-400 text-center">
+               <div className="bg-white mt-2 rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 border-4 border-yellow-400 animate-bounce transition-all duration-300 hover:animate-none text-center">
           <div className="text-6xl mb-4">{selectedPrize.icon}</div>
           <h2 className="text-2xl font-bold mb-2">Congratulations!</h2>
-          <p className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500 mb-4">
-            You won: {selectedPrize.text}
-          </p>
-          {!offerClaimed ? (
+         {!offerClaimed? <p className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500 mb-4">
+             You won: {selectedPrize.text}
+          </p>: <p className="text-xl font-semibold text-green-600 mb-4">
+             You have claimed: {offerCode}
+          </p>}
+    
+          {!offerClaimed && (
             <button onClick={() => setShowModal(true)}
               className="mt-4 px-6 py-3 rounded-full bg-green-600 text-white font-bold hover:bg-green-700">
               Claim Your Offer
             </button>
-          ) : (
-            <div className="mt-4 px-6 py-3 rounded-full bg-yellow-200 text-yellow-800 font-bold border-2 border-yellow-400">
-              🎉 Your Offer Code: {offerCode}
-            </div>
-          )}
+          ) }
         </div>
       )}
 
@@ -279,7 +290,7 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ pageKey, googleScriptUrl, prizes 
             <form onSubmit={handleClaimSubmit} className="space-y-4">
               <input type="text" placeholder="Your Name" value={userName}
                 onChange={(e) => setUserName(e.target.value)} required
-                className="w-full px-4 py-2 border rounded-lg" />
+                className="w-full px-4 text-black py-2 border rounded-lg" />
               <PhoneInputStyles />
               <PhoneInput international defaultCountry="IN"
                 value={userPhone} onChange={(value) => setUserPhone(value || "")}
