@@ -17,7 +17,7 @@ interface Prize {
 
 const prizes: Prize[] = [
   { id: 1, text: "10% OFF", color: "#FF6B35", textColor: "#FFFFFF", icon: "🏷️" },
-  { id: 2, text: "Large Fury Sky Shot", color: "#FFD23F", textColor: "#2D1810", icon: "🚀" },
+  { id: 2, text: "Large Fury Sky Shot", color: "#FFD23F", textColor: "#FFFFFF", icon: "🚀" },
   { id: 4, text: "30 Shots", color: "#1E90FF", textColor: "#FFFFFF", icon: "🎇" },
   { id: 5, text: "Atom Bomb", color: "#E74C3C", textColor: "#FFFFFF", icon: "💣" },
   { id: 6, text: "25% OFF", color: "#27AE60", textColor: "#FFFFFF", icon: "🏷️" },
